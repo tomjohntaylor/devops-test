@@ -1,0 +1,10 @@
+{
+    "containerPort": 3000,
+    "Cats": {
+        "dbConfig": {
+            "host": "mongo",
+            "port": 27017,
+            "dbName": "test"
+        }
+    }
+}
