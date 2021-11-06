@@ -1,5 +1,13 @@
 version: '3.2'
 services:
+  proxy:
+    container_name: proxy
+    restart: always
+    image: proxy:1
+    ports:
+      - 8080:8080
+    links:
+      - node
   node:
     container_name: cats
     restart: always
