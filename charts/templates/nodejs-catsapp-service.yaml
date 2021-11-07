@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-catsapp
+  labels:
+    app: nodejs-catsapp
+spec:
+  ports:
+    - name: nodejs-catsapp
+      port: {{ index .Values "nodejs-catsapp" "service" "port" }}
+      protocol: TCP
+      targetPort: {{ index .Values "nodejs-catsapp" "service" "port" }}
+  selector:
+    app: nodejs-catsapp
+  sessionAffinity: None
+  type: ClusterIP

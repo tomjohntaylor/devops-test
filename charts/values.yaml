@@ -1,0 +1,54 @@
+# env: DEV
+
+administration:
+  imagesRepoName: default-minikube
+
+nodejs-catsapp:
+  deployment:
+    imageName: nodejs-catsapp
+    imageTag: 1
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+  # config:
+  #   db:
+  #     host: "mongo"
+  #     port": 27017
+  service:
+    port: 3000
+
+nginx-proxy:
+  deployment:
+    imageName: nginx-proxy
+    imageTag: 1
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 32Mi
+  service:
+    port: 8080
+  ingress:
+    host: "catsapp.k8s"
+
+mongo-db:
+  deployment:
+    imageName: mongo
+    imageTag: 5.0.3
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 50m
+        memory: 32Mi
+  service:
+    port: 27017
+  storage:
+    size: 100Mi

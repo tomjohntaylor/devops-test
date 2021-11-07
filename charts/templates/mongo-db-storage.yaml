@@ -1,0 +1,12 @@
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: mongo-db-storage
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   volumeMode: Filesystem
+#   resources:
+#     requests:
+#      storage: {{ index .Values "mongo-db" "storage" "size" }}
+#   storageClassName: "standard"

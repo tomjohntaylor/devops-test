@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nodejs-catsapp
+  name: nodejs-catsapp
+spec:
+  selector:
+    matchLabels:
+      app: nodejs-catsapp
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: nodejs-catsapp
+    spec:
+      containers:
+        - name: nodejs-catsapp
+          image: {{ index .Values "administration" "imagesRepoName" }}/{{ index .Values "nodejs-catsapp" "deployment" "imageName" }}:{{ index .Values "nodejs-catsapp" "deployment" "imageTag" }}
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: {{ index .Values "nodejs-catsapp" "service" "port" }}
+          resources:
+            limits:
+              cpu: {{ index .Values "nodejs-catsapp" "deployment" "resources" "limits" "cpu" }}
+              memory: {{ index .Values "nodejs-catsapp" "deployment" "resources" "limits" "memory" }}
+            requests:
+              cpu: {{ index .Values "nodejs-catsapp" "deployment" "resources" "requests" "cpu" }}
+              memory: {{ index .Values "nodejs-catsapp" "deployment" "resources" "requests" "memory" }}
+          volumeMounts:
+            - name: nodejs-catsapp-configmap-volume
+              mountPath: /usr/config
+              readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: nodejs-catsapp-configmap-volume
+          configMap:
+            name: nodejs-catsapp
+      # securityContext:
+      #   fsGroup: 1000
+      #   runAsUser: 1000

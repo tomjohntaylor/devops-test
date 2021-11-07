@@ -10,7 +10,7 @@ RUN npm run build
 # app run in production mode
 FROM node:14.18.1-alpine3.14
 WORKDIR /usr
-COPY package.json package-lock.json config/ ./
+COPY package.json package-lock.json ./
 RUN npm install --only=production
 COPY --from=0 /usr/dist ./dist
 EXPOSE 3000

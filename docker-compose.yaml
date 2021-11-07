@@ -3,15 +3,17 @@ services:
   proxy:
     container_name: proxy
     restart: always
-    image: proxy:1
+    build: nginx/.
+    # image: proxy:1
     ports:
       - 8080:8080
     links:
-      - node
-  node:
-    container_name: cats
+      - nodejs-catsapp
+  nodejs-catsapp:
+    container_name: nodejs-catsapp
     restart: always
-    image: nodejs_cats:1
+    build: .
+    # image: nodejs_cats:1
     ports:
       - 3000:3000
     links:
@@ -21,7 +23,8 @@ services:
         source: ./config
         target: /usr/config
   mongo:
-    image: mongo
+    container_name: mongo
+    image: mongo:5.0.3
     ports:
       - 27017:27017
     volumes:

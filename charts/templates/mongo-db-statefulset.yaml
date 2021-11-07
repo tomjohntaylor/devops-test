@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo-db
+
+spec:
+  selector:
+    matchLabels:
+      app: mongo-db
+  serviceName: mongo-db
+  replicas: 3
+  template:
+    metadata:
+      name: mongo-db
+      labels:
+        app: mongo-db
+        replicaset: MainRepSet
+    spec:
+      containers:
+      - name: mongo-db
+        image: {{ index .Values "administration" "imagesRepoName" }}/{{ index .Values "mongo-db" "deployment" "imageName" }}:{{ index .Values "mongo-db" "deployment" "imageTag" }}
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: {{ index .Values "mongo-db" "service" "port" }}
+        resources:
+          limits:
+            cpu: {{ index .Values "mongo-db" "deployment" "resources" "limits" "cpu" }}
+            memory: {{ index .Values "mongo-db" "deployment" "resources" "limits" "memory" }}
+          requests:
+            cpu: {{ index .Values "mongo-db" "deployment" "resources" "requests" "cpu" }}
+            memory: {{ index .Values "mongo-db" "deployment" "resources" "requests" "memory" }}
+        command:
+          - "mongod"
+          - "--bind_ip"
+          - "0.0.0.0"
+          - "--replSet"
+          - "MainRepSet"
+        volumeMounts:
+          - name: mongodb-persistent-storage-claim
+            mountPath: /data/db
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+  volumeClaimTemplates:
+  - metadata:
+      name: mongodb-persistent-storage-claim
+      annotations:
+        volume.beta.kubernetes.io/storage-class: "standard"
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi

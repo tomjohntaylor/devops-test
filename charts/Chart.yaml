@@ -1,0 +1,5 @@
+apiVersion: v2
+description: A Helm chart for devops-test-tomasz app.
+name: devops-test-tomasz
+type: application
+version: '2021.11.1'

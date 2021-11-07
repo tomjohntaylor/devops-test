@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-proxy
+  labels:
+    app: nginx-proxy
+spec:
+  selector:
+    matchLabels:
+      app: nginx-proxy
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 50%
+    type: RollingUpdate
+  template:
+    metadata:
+      name: nginx-proxy
+      labels:
+        app: nginx-proxy
+    spec:
+      containers:
+        - name: nginx-proxy
+          image: {{ index .Values "administration" "imagesRepoName" }}/{{ index .Values "nginx-proxy" "deployment" "imageName" }}:{{ index .Values "nginx-proxy" "deployment" "imageTag" }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ index .Values "nginx-proxy" "service" "port" }}
+          resources:
+            limits:
+              cpu: {{ index .Values "nginx-proxy" "deployment" "resources" "limits" "cpu" }}
+              memory: {{ index .Values "nginx-proxy" "deployment" "resources" "limits" "memory" }}
+            requests:
+              cpu: {{ index .Values "nginx-proxy" "deployment" "resources" "requests" "cpu" }}
+              memory: {{ index .Values "nginx-proxy" "deployment" "resources" "requests" "memory" }}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      # securityContext:
+      #   fsGroup: 1000
+      #   runAsUser: 1000
